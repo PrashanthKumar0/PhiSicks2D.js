@@ -1,0 +1,28 @@
+body{
+    display: flex;
+    flex-wrap: wrap;
+    background: #111;
+    margin:0px;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+canvas{
+    display: block;
+    /* width:100%; */
+    border-radius: 4px;
+    background: #FFF;
+}
+
+#LOG{
+    font-weight: bold;
+    margin:auto;
+    padding:15px 40px;
+    background: #222;
+    color:gold;
+}
+.event{
+    color:aqua;
+}
