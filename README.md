@@ -8,6 +8,9 @@ Currently works only on PC
 > ```P``` spwans a polygon ```R``` spawns a rectangle ```C``` spwans a circle 
 > hit ```Z``` to pause/play simulation 
 
+<img src="./Ref/VideoCapture_20210821-233213.jpg" alt="a screenshot" />
+
+
     CAUTION:
         This is just made for fun not a serious project. 
         " all my projects are for fun :) "
