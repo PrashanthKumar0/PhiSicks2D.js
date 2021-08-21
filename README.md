@@ -3,6 +3,10 @@
 A 2D physics engine written in JS xD
 
 [Demo](https://prashanthkumar0.github.io/PhiSicks2D.js/)
+Currently works only on PC
+> use ```WASD``` keys to move blocks and ```Up and Down arrow``` keys to switch between them
+> ```P``` spwans a polygon ```R``` spawns a rectangle ```C``` spwans a circle 
+> hit ```Z``` to pause/play simulation 
 
     CAUTION:
         This is just made for fun not a serious project. 
