@@ -28,7 +28,7 @@ Currently works only on PC
 
     Although its quite buggy You may use its parts like SAT-collision detection
 
-
+# BUG 
 The part which is buggy is : 
 ```javascript
 // in
@@ -36,10 +36,17 @@ function resolveCollision();
 // after the comment 
 // ANCHOR : BUGGY PART
 ```
+
+I will be very thankful if anyone help me resolving this issue 😊
+
+
 While every other thing in this engine is perfect. (i probably need to work on it but i am going to prepare for JEE exam so i will pause the work).
 
+# REFERENCE 
 
 > you can use the book given in [Reference directory](./Ref/2d%20Physics%20Engine%20With%20js.pdf) for tring to make your own and there are also other reference material available that i used when i was stuck and it helped a lot.
+
+# My lil story
 
 > The most difficult part was to derive and understand the angular impulse (as mentioned earlier I still have no idea how to correctly implement angular impulse part but i believe that its collision information thats causing that weird artifact)
 
