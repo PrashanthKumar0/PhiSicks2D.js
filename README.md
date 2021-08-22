@@ -5,7 +5,7 @@ A 2D physics engine written in JS xD
 [Live Demo](https://prashanthkumar0.github.io/PhiSicks2D.js/)
 <br/><br/>
 
-If you are on mobile then better see a [demo here](https://youtu.be/1wv_1Bd-YrE)
+If you are on mobile then better see a [demo video here](https://youtu.be/1wv_1Bd-YrE)
 
 Currently works only on PC
 > use ```WASD``` keys to move blocks and ```Up and Down arrow``` keys to switch between them
