@@ -1,8 +1,19 @@
-# PhiSicks2D.js
+# PhiSicks2D.js φ
 
 A 2D physics engine written in JS xD
 
-[Demo](https://prashanthkumar0.github.io/PhiSicks2D.js/)
+[Live Demo](https://prashanthkumar0.github.io/PhiSicks2D.js/)
+<br/><br/>
+
+If you are on mobile then better see a [demo video here](https://youtu.be/1wv_1Bd-YrE)
+
+Currently works only on PC
+> use ```WASD``` keys to move blocks and ```Up and Down arrow``` keys to switch between them
+> ```P``` spwans a polygon ```R``` spawns a rectangle ```C``` spwans a circle 
+> hit ```Z``` to pause/play simulation 
+
+<img src="./Ref/VideoCapture_20210821-233213.jpg" alt="a screenshot" />
+
 
     CAUTION:
         This is just made for fun not a serious project. 
@@ -17,7 +28,7 @@ A 2D physics engine written in JS xD
 
     Although its quite buggy You may use its parts like SAT-collision detection
 
-
+# BUG 
 The part which is buggy is : 
 ```javascript
 // in
@@ -25,10 +36,17 @@ function resolveCollision();
 // after the comment 
 // ANCHOR : BUGGY PART
 ```
+
+I will be very thankful if anyone help me resolving this issue 😊
+
+
 While every other thing in this engine is perfect. (i probably need to work on it but i am going to prepare for JEE exam so i will pause the work).
 
+# REFERENCE 
 
 > you can use the book given in [Reference directory](./Ref/2d%20Physics%20Engine%20With%20js.pdf) for tring to make your own and there are also other reference material available that i used when i was stuck and it helped a lot.
+
+# My lil story
 
 > The most difficult part was to derive and understand the angular impulse (as mentioned earlier I still have no idea how to correctly implement angular impulse part but i believe that its collision information thats causing that weird artifact)
 

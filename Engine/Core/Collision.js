@@ -483,6 +483,7 @@ function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPer
 
 // ! TEMP
 function circ(x, y, r, ctx) {
+    return; // feeling lazy to disable it by commenting everywhere
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.stroke();
