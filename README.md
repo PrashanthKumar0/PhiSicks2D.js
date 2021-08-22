@@ -2,7 +2,9 @@
 
 A 2D physics engine written in JS xD
 
-[Demo](https://prashanthkumar0.github.io/PhiSicks2D.js/)
+[Live Demo](https://prashanthkumar0.github.io/PhiSicks2D.js/)
+<br/><br/>
+
 If you are on mobile then better see a [demo here](https://youtu.be/1wv_1Bd-YrE)
 
 Currently works only on PC
