@@ -1,4 +1,4 @@
-# PhiSicks2D.js Φ
+# PhiSicks2D.js φ
 
 A 2D physics engine written in JS xD
 
