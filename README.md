@@ -28,19 +28,13 @@ Currently works only on PC
 
     Although its quite buggy You may use its parts like SAT-collision detection
 
-# BUG 
-The part which is buggy is : 
-```javascript
-// in
-function resolveCollision();
-// after the comment 
-// ANCHOR : BUGGY PART
-```
 
-I will be very thankful if anyone help me resolving this issue 😊
+# BUG-FIXED
 
+Finally fixed after a response from [reddit guy](https://www.reddit.com/u/HellGate94)  on  this question [here](https://www.reddit.com/r/gamedev/comments/p96396/made_a_physics_engine_with_vanilla_javascript) 
 
-While every other thing in this engine is perfect. (i probably need to work on it but i am going to prepare for JEE exam so i will pause the work).
+Also [This](https://youtu.be/k-HF4qnvXq8) helped me a lot 
+
 
 # REFERENCE 
 
