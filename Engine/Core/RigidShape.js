@@ -4,7 +4,7 @@
 
 const E_RIGID_BODY_COLLECTION = []; // this contains a reference to all the rigid bodies
 
-function RigidShape(centerVec2, isFixed = false, mass = 1, restitution = 0.8, mu = 0.8) {
+function RigidShape(centerVec2, isFixed = false, mass = 1, restitution = 0.8, mu = 0.004) {
 
     //Some kinematic props
 
@@ -26,12 +26,13 @@ function RigidShape(centerVec2, isFixed = false, mass = 1, restitution = 0.8, mu
 
     //some other properties
     this.coeffFriction = mu || 0.8; // coefficient of friction (MU)
-    // this.coeffFriction = 1; // coefficient of friction (MU)
+    // this.coeffFriction = 0.001; // coefficient of friction (MU)
     // this.coeffFriction = 0.8; // coefficient of friction (MU)
     // frictional force = MU * NormalForce 
     // (direction is tangent to NormalForce opposite to velocity)
 
     this.restitution = restitution || 0.5;   // restitution (e) = -v/u 
+    // this.restitution = 0.9;   // restitution (e) = -v/u 
     // this.restitution = 0.6;   // restitution (e) = -v/u 
     // this.restitution = 1.0001;   // restitution (e) = -v/u 
     // v=final velocity ; u=initial velocity 
@@ -86,8 +87,8 @@ RigidShape.prototype.update = function (dt = 0.1) {
 
 RigidShape.prototype.accelerate = function (vec2Acceleration) {
     this.acceleration.add(vec2Acceleration);
-    this.velocity.add(this.acceleration);
-    this.acceleration.scale(0);
+    // this.velocity.add(this.acceleration);
+    // this.acceleration.scale(0);
 }
 
 //todo: add apply torque etc

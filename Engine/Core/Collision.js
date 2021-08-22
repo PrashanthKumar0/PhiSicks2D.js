@@ -250,6 +250,7 @@ function applyPositionalCorrection(shape1, shape2, collisionInfo, positionalCorr
 // const _90_DEGREES_IN_RADIANS = 90 * _TO_RADIANS;
 
 
+
 function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPercentage = 0.8, ctx) {
     if (shape1.invMass == 0 && shape2.invMass == 0) return;
 
@@ -257,19 +258,14 @@ function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPer
 
 
 
-    //! apply impulses after collision
-    //! LINEAR IMPULSE
-    // let normal = collisionInfo.normal.copy().normalize();
     let normal = collisionInfo.normal.normalize().copy(); // ? we dont need to copy
     let tangent = normal.copy();
-    tangent.x = normal.y;
+    tangent.x = normal.y; // Efficient way to rotate 90 degree :P linear algebra on play
     tangent.y = -normal.x;
-    // console.log(normal.dot(tangent));
-    // debugger;
 
     //TODO: see right formula for combination of restitution and friction
     let effectiveRestitution = Math.min(shape1.restitution, shape2.restitution);  //we just  pick dominant one for now ()
-    let effectiveFriction = Math.min(shape1.coeffFriction, shape2.coeffFriction); //we just  pick dominant one for now ()
+    let effectiveFriction = Math.max(shape1.coeffFriction, shape2.coeffFriction); //we just  pick dominant one for now ()
     let relativeVelocity = shape2.velocity.copy().subtract(shape1.velocity); // relative velocity ( from 1 to 2 ) // TODO : see if we actually need .copy()
 
 
@@ -277,13 +273,66 @@ function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPer
         return;
     }
 
-    let impulseFactor = -((1 + effectiveRestitution) / (shape1.invMass + shape2.invMass));
 
-    let normalImpulse = impulseFactor * relativeVelocity.dot(normal);
-    let tangentImpulse = impulseFactor * relativeVelocity.dot(tangent) * effectiveFriction;
+    // ! JUST LINEAR IMPULSE
+    // let impulseFactor = -((1 + effectiveRestitution) / (shape1.invMass + shape2.invMass));
 
-    normal.scale(normalImpulse);
-    tangent.scale(tangentImpulse);
+    // let normalImpulse = impulseFactor * relativeVelocity.dot(normal);
+    // let tangentImpulse = impulseFactor * relativeVelocity.dot(tangent) * effectiveFriction;
+
+    // normal.scale(normalImpulse);
+    // tangent.scale(tangentImpulse);
+
+    // shape1.velocity.add(normal.copy().scale(-shape1.invMass));
+    // shape2.velocity.add(normal.copy().scale(shape2.invMass));
+    // debugger;
+    // shape1.velocity.add(tangent.copy().scale(-shape1.invMass));
+    // shape2.velocity.add(tangent.copy().scale(shape2.invMass));
+
+
+
+
+
+    //! angular velocity 
+    // // ANCHOR : BUGGY PART
+    // RESOLVED BUG :)
+    // normal.normalize();
+    // tangent = normal.copy();
+    // tangent.x = normal.y;
+    // tangent.y = -normal.x;
+
+    
+    let p = collisionInfo.end.copy();
+    //!just for debugging
+    // ctx.strokeStyle = "green";
+    // circ(p.x, p.y, 5, ctx);
+    // debugger;
+
+    let _pow = Math.pow;
+
+    let Rap = p.copy().subtract(shape1.center);
+    let Rbp = p.copy().subtract(shape2.center);
+
+    let Va1 = shape1.velocity.copy().add(new Vec2(-1 * shape1.angularVelocity * Rap.y, shape1.angularVelocity * Rap.x));
+    let Vb1 = shape2.velocity.copy().add(new Vec2(-1 * shape2.angularVelocity * Rbp.y, shape2.angularVelocity * Rbp.x));
+
+    relativeVelocity = Vb1.subtract(Va1); // ? TODO : remove previous calculations
+    
+
+    
+    let normalAngularImpulse = relativeVelocity.dot(normal) * (-(1 + effectiveRestitution));
+    normalAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(normal), 2) / shape1.momentOfInertia + _pow(Rbp.cross(normal), 2) / shape2.momentOfInertia;
+
+    let tangentAngularImpulse = relativeVelocity.dot(tangent) * (-(1 + effectiveRestitution)) * effectiveFriction;
+    tangentAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(tangent), 2) / shape1.momentOfInertia + _pow(Rbp.cross(tangent), 2) / shape2.momentOfInertia;
+
+    shape1.angularVelocity -= Rap.cross(normal) * normalAngularImpulse / shape1.momentOfInertia;
+    shape2.angularVelocity += Rbp.cross(normal) * normalAngularImpulse / shape2.momentOfInertia;
+
+
+
+    normal.scale(normalAngularImpulse);
+    tangent.scale(tangentAngularImpulse);
 
     shape1.velocity.add(normal.copy().scale(-shape1.invMass));
     shape2.velocity.add(normal.copy().scale(shape2.invMass));
@@ -293,48 +342,9 @@ function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPer
 
 
 
-
-
-    //! angular velocity 
-    // ANCHOR : BUGGY PART
-    normal.normalize();
-    tangent = normal.copy();
-    tangent.x = normal.y;
-    tangent.y = -normal.x;
-
-    // TODO: understand this nonsense (actually the point p calculation i have directly copied from author's code [no other part is copied and everything else than these 3 lines are genuinely my hand written code])
-    //? we could have directly pick p as end point of collision informatio
-    var start = collisionInfo.start.scale(shape2.invMass / (shape1.invMass + shape2.invMass));
-    var end = collisionInfo.end.scale(shape1.invMass / (shape1.invMass + shape2.invMass));
-    var p = start.add(end);
-
-    //!just for debugging
-
-    ctx.strokeStyle = "red";
-    circ(p.x, p.y, 5, ctx);
-    // ctx.strokeStyle = "green";
-    // circ(collisionInfo.start.x, collisionInfo.start.y, 5, ctx);
-    // debugger;
-    let _pow = Math.pow;
-
-    let Rap = p.copy().subtract(shape1.center);
-    let Rbp = p.copy().subtract(shape2.center);
-
-    // let Va1 = shape1.velocity.copy().add(new Vec2(-1 * shape1.angularVelocity * Rap.y, shape1.angularVelocity * Rap.x));
-    // let Vb1 = shape2.velocity.copy().add(new Vec2(-1 * shape2.angularVelocity * Rbp.y, shape2.angularVelocity * Rbp.x));
-
-    // relativeVelocity = Vb1.subtract(Va1);
-
-
-    let normalAngularImpulse = relativeVelocity.dot(normal) * (-(1 + effectiveRestitution));
-    normalAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(normal), 2) / shape1.momentOfInertia + _pow(Rbp.cross(normal), 2) / shape2.momentOfInertia;
-    // normalAngularImpulse*=0.01;
-    shape1.angularVelocity -= Rap.cross(normal) * normalAngularImpulse / shape1.momentOfInertia;
-    shape2.angularVelocity += Rbp.cross(normal) * normalAngularImpulse / shape2.momentOfInertia;
-
     // let tangentAngularImpulse = relativeVelocity.dot(tangent) * (-(1 + effectiveRestitution));
     // tangentAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(tangent), 2) / shape1.momentOfInertia + _pow(Rbp.cross(tangent), 2) / shape2.momentOfInertia;
-
+    // ? WTH 
     // shape1.angularVelocity += effectiveFriction * Rap.cross(normal) * tangentAngularImpulse / shape1.momentOfInertia;
     // shape2.angularVelocity -= effectiveFriction * Rbp.cross(normal) * tangentAngularImpulse / shape2.momentOfInertia;
 
@@ -343,6 +353,126 @@ function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPer
         debugger;
     }
 }
+
+
+
+// function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPercentage = 0.8, ctx) {
+//     if (shape1.invMass == 0 && shape2.invMass == 0) return;
+
+//     applyPositionalCorrection(shape1, shape2, collisionInfo, positionalCorrectionPercentage);
+
+
+
+//     //! apply impulses after collision
+//     //! LINEAR IMPULSE
+//     // let normal = collisionInfo.normal.copy().normalize();
+//     let normal = collisionInfo.normal.normalize().copy(); // ? we dont need to copy
+//     let tangent = normal.copy();
+//     tangent.x = normal.y;
+//     tangent.y = -normal.x;
+//     // console.log(normal.dot(tangent));
+//     // debugger;
+
+//     //TODO: see right formula for combination of restitution and friction
+//     let effectiveRestitution = Math.min(shape1.restitution, shape2.restitution);  //we just  pick dominant one for now ()
+//     let effectiveFriction = Math.max(shape1.coeffFriction, shape2.coeffFriction); //we just  pick dominant one for now ()
+//     let relativeVelocity = shape2.velocity.copy().subtract(shape1.velocity); // relative velocity ( from 1 to 2 ) // TODO : see if we actually need .copy()
+
+
+//     if ((relativeVelocity.dot(normal) < 0)) { //both are moving in opposite direction
+//         return;
+//     }
+
+//     let impulseFactor = -((1 + effectiveRestitution) / (shape1.invMass + shape2.invMass));
+
+//     let normalImpulse = impulseFactor * relativeVelocity.dot(normal);
+//     let tangentImpulse = impulseFactor * relativeVelocity.dot(tangent) * effectiveFriction;
+
+//     normal.scale(normalImpulse);
+//     tangent.scale(tangentImpulse);
+
+//     // shape1.velocity.add(normal.copy().scale(-shape1.invMass));
+//     // shape2.velocity.add(normal.copy().scale(shape2.invMass));
+//     // debugger;
+//     // shape1.velocity.add(tangent.copy().scale(-shape1.invMass));
+//     // shape2.velocity.add(tangent.copy().scale(shape2.invMass));
+
+
+
+
+
+//     //! angular velocity 
+//     // ANCHOR : BUGGY PART
+//     normal.normalize();
+//     tangent = normal.copy();
+//     tangent.x = normal.y;
+//     tangent.y = -normal.x;
+
+//     // TODO: understand this nonsense (actually the point p calculation i have directly copied from author's code [no other part is copied and everything else than these 3 lines are genuinely my hand written code])
+//     //? we could have directly pick p as end point of collision informatio
+//     // var start = collisionInfo.start.scale(shape2.invMass / (shape1.invMass + shape2.invMass));
+//     // var end = collisionInfo.end.scale(shape1.invMass / (shape1.invMass + shape2.invMass));
+//     // var p = start.add(end);
+//     let p = collisionInfo.end.copy();
+//     //!just for debugging
+
+//     // ctx.strokeStyle = "green";
+//     // circ(p.x, p.y, 5, ctx);
+//     // debugger;
+//     let _pow = Math.pow;
+
+//     let Rap = p.copy().subtract(shape1.center);
+//     let Rbp = p.copy().subtract(shape2.center);
+
+//     let Va1 = shape1.velocity.copy().add(new Vec2(-1 * shape1.angularVelocity * Rap.y, shape1.angularVelocity * Rap.x));
+//     let Vb1 = shape2.velocity.copy().add(new Vec2(-1 * shape2.angularVelocity * Rbp.y, shape2.angularVelocity * Rbp.x));
+
+//     relativeVelocity = Vb1.subtract(Va1);
+//     // if (relativeVelocity.dot(normal) <= 0.2) {
+//     //     // console.log('beep');
+//     //     return;
+//     // }
+    
+
+//     // ctx.strokeStyle = "red";
+//     // let n = p.copy().add(normal.copy().scale(10));
+//     // circ(p.x, p.y, 5, ctx);
+//     // ctx.strokeStyle = "green";
+//     // circ(n.x, n.y, 5, ctx);
+
+//     let normalAngularImpulse = relativeVelocity.dot(normal) * (-(1 + effectiveRestitution));
+//     normalAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(normal), 2) / shape1.momentOfInertia + _pow(Rbp.cross(normal), 2) / shape2.momentOfInertia;
+
+//     let tangentAngularImpulse = relativeVelocity.dot(tangent) * (-(1 + effectiveRestitution)) * effectiveFriction;
+//     tangentAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(tangent), 2) / shape1.momentOfInertia + _pow(Rbp.cross(tangent), 2) / shape2.momentOfInertia;
+
+//     shape1.angularVelocity -= Rap.cross(normal) * normalAngularImpulse / shape1.momentOfInertia;
+//     shape2.angularVelocity += Rbp.cross(normal) * normalAngularImpulse / shape2.momentOfInertia;
+
+
+
+//     normal.scale(normalAngularImpulse);
+//     tangent.scale(tangentAngularImpulse);
+
+//     shape1.velocity.add(normal.copy().scale(-shape1.invMass));
+//     shape2.velocity.add(normal.copy().scale(shape2.invMass));
+//     // debugger;
+//     shape1.velocity.add(tangent.copy().scale(-shape1.invMass));
+//     shape2.velocity.add(tangent.copy().scale(shape2.invMass));
+
+
+
+//     // let tangentAngularImpulse = relativeVelocity.dot(tangent) * (-(1 + effectiveRestitution));
+//     // tangentAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(tangent), 2) / shape1.momentOfInertia + _pow(Rbp.cross(tangent), 2) / shape2.momentOfInertia;
+
+//     // shape1.angularVelocity += effectiveFriction * Rap.cross(normal) * tangentAngularImpulse / shape1.momentOfInertia;
+//     // shape2.angularVelocity -= effectiveFriction * Rbp.cross(normal) * tangentAngularImpulse / shape2.momentOfInertia;
+
+//     //TODO : remove this
+//     if ((isNaN(shape1.angularVelocity) || isNaN(shape2.angularVelocity))) {
+//         debugger;
+//     }
+// }
 
 
 

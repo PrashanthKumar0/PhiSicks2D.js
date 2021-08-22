@@ -5,7 +5,7 @@
  */
 
 
-function Rectangle(centerVec2, width, height, fixed = false, density = 0.0001, restitution = 0.75, coeffFriction = 0.2) {
+function Rectangle(centerVec2, width, height, fixed = false, density = 0.001, restitution = 0.85, coeffFriction = 0.001) {
     this.fixed = fixed;
     mass = density * height * width;
     RigidShape.call(this, centerVec2, fixed, mass, restitution, coeffFriction); // inherit
@@ -52,7 +52,6 @@ function Rectangle(centerVec2, width, height, fixed = false, density = 0.0001, r
 
 
 Rectangle.prototype.calculateMOI = function () {
-    // this.momentOfInertia = 1;
     // if (this.mass == Infinity) this.momentOfInertia = Infinity;
     this.momentOfInertia = (1 / 12) * this.mass * (this.width * this.width + this.height * this.height);
 }

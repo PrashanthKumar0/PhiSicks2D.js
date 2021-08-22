@@ -70,16 +70,16 @@ function initBoundaryScene() {
     let r2 = new Rectangle(new Vec2(width / 2, height + groundDepth / 2 - 6), width, groundDepth, true);
     let r3 = new Rectangle(new Vec2(0, height / 2), 6, height, true);
     let r4 = new Rectangle(new Vec2(width, height / 2), 6, height, true);
-    let r5 = new Rectangle(new Vec2(100, canvas.height - 10), 10, 10, true);
+    // let r5 = new Rectangle(new Vec2(100, canvas.height - 20), 40, 20, true);
     r1.setMass(Infinity);
     r2.setMass(Infinity);
     r3.setMass(Infinity);
     r4.setMass(Infinity);
-    r5.setMass(Infinity)
+    // r5.setMass(Infinity);
 
     //just for test
     // r5 = new Rectangle(new Vec2(width / 2, height / 2), 10, 10);
-    r5 = new Rectangle(new Vec2(width / 2, height / 2), 60, 60);
+    r6 = new Rectangle(new Vec2(width / 2, height / 2), 60, 60);
 }
 
 

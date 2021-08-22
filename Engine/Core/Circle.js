@@ -5,7 +5,7 @@
  */
 
 
-function Circle(centerVec2, radius, fixed = false, density = 0.0001, restitution = 0.75, coeffFriction = 0.2) {
+function Circle(centerVec2, radius, fixed = false, density = 0.001, restitution = 0.85, coeffFriction = 0.001) {
     mass = density * Math.PI * radius * radius;
     RigidShape.call(this, centerVec2, fixed, mass, restitution, coeffFriction); // inherit
     this.radius = radius;

@@ -5,7 +5,7 @@
  */
 
 
-function Polygon(centerVec2, sides, radius, fixed = false, density = 0.0001, restitution = 0.75, coeffFriction = 0.2) { // cyclic polygon
+function Polygon(centerVec2, sides, radius, fixed = false, density = 0.001, restitution = 0.85, coeffFriction = 0.001) { // cyclic polygon
     // TODO : check if area formula is ok
     mass = density * (sides * radius * radius * Math.pow(Math.sin(4 * Math.PI / (sides)), 2)) / 2;
 
