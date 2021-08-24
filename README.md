@@ -1,18 +1,18 @@
 # PhiSicks2D.js φ
 
-A 2D physics engine written in JS xD
+A very simple 2D physics engine written in JS xD
 
-[Live Demo](https://prashanthkumar0.github.io/PhiSicks2D.js/)
+[demo video here](https://youtu.be/1wv_1Bd-YrE)
 <br/><br/>
 
-If you are on mobile then better see a [demo video here](https://youtu.be/1wv_1Bd-YrE)
+[Live Demo](https://prashanthkumar0.github.io/PhiSicks2D.js/)
 
-Currently works only on PC
+For PC Users
 > use ```WASD``` keys to move blocks and ```Up and Down arrow``` keys to switch between them
 > ```P``` spwans a polygon ```R``` spawns a rectangle ```C``` spwans a circle 
 > hit ```Z``` to pause/play simulation 
 
-<img src="./Ref/VideoCapture_20210821-233213.jpg" alt="a screenshot" />
+<img src="./screen_shot/Screenshot1.png" alt="a screenshot" />
 
 
     CAUTION:
@@ -29,7 +29,7 @@ Currently works only on PC
     Although its quite buggy You may use its parts like SAT-collision detection
 
 
-# BUG-FIXED
+# MAJOR BUGS FIXED
 
 Finally fixed after a response from [reddit guy](https://www.reddit.com/u/HellGate94)  on  this question [here](https://www.reddit.com/r/gamedev/comments/p96396/made_a_physics_engine_with_vanilla_javascript) 
 

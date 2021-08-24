@@ -3,6 +3,11 @@ body{
     flex-wrap: wrap;
     background: #111;
     margin:0px;
+    overflow: hidden;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    background: #FFF;   
 }
 
 *{
@@ -13,16 +18,43 @@ canvas{
     display: block;
     /* width:100%; */
     border-radius: 4px;
-    background: #FFF;
+    /* background: #FFF; */
+    z-index: 100;
+
 }
 
 #LOG{
+    opacity:0.3;
+    position: fixed;
+    top:0px;
+    right:0px;
     font-weight: bold;
     margin:auto;
     padding:15px 40px;
     background: #222;
     color:gold;
+    z-index: 10;
 }
 .event{
     color:aqua;
+}
+
+#controls{
+    display: block;
+    opacity: 0.85;
+    position: fixed;
+    transform:translate(25%,-50%);
+    z-index: 10000;
+}
+
+#controls button{
+    outline:none;
+    border:none;
+    background: #333;
+    color:#FFF;
+    font-weight: bolder;
+}
+
+#controls button:active{
+    opacity: 0.5;
 }

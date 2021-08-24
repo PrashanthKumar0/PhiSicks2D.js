@@ -1,9 +1,120 @@
+// DEPENDENCIES : MAIN.js
 let CURRENT_BOUND_OBJECT_INDEX = 0;
 addEventListener('keydown', function (e) {
     let msg = " <b class='event'> [ KEY_PRESS : ] </b> " + e.key.toLocaleLowerCase() + "  . <br>"
     msg += handleCommand(e.key);
     msg += objectDetails();
     debug(msg)
+    moveControlsToBoundObject();
+});
+
+
+
+
+let mouseStatus = {
+    down: false,
+    prevTime: 0,
+}
+addEventListener('load', function () {
+    // MOUSE
+    canvas.addEventListener('mousedown', function (e) { // select object at curser position
+        mouseStatus.down = true;
+        let p = new Vec2(e.clientX, e.clientY);
+        for (let i = 0; i < E_RIGID_BODY_COLLECTION.length; i++) {
+            if (E_RIGID_BODY_COLLECTION[i].EXT_pt_collision_check(p)) {
+                E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].selected = false;
+                CURRENT_BOUND_OBJECT_INDEX = i;
+                E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].selected = true;
+                E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].fixed = true;
+                break;
+            }
+        }
+        mouseStatus.prevTime = performance.now();
+        // object point intersection
+        // engine.paused=true;
+        // console.log(e.clientX,e.clientY);
+    });
+    canvas.addEventListener('mousemove', function (e) {
+        if (!mouseStatus.down) return;
+        let now = performance.now();
+        if (mouseStatus.prevTime == 0) {
+            mouseStatus.prevTime = now;
+        }
+        let dt = now - mouseStatus.prevTime;
+        if (dt == 0) dt = Infinity;
+        mouseStatus.prevTime = now;
+
+        let pos = new Vec2(e.clientX, e.clientY);
+        pos.subtract(E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].center);
+        E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].move(pos, true);
+        E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].stop();
+
+        let msg = " <b class='event'> [MOUSE MOVE] </b> <br>" +
+            "=======================<br>";
+
+        msg += objectDetails();
+        debug(msg)
+
+        moveControlsToBoundObject();
+    });
+    addEventListener('mouseup', function (e) {
+        mouseStatus.down = false;
+        mouseStatus.prevTime = 0;
+        E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].selected = false;
+        E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].fixed = false;
+    });
+
+
+    //TOUCH
+    canvas.addEventListener('touchstart', function (e) { // select object at curser position
+        mouseStatus.down = true;
+        let p = new Vec2(e.touches[0].clientX, e.touches[0].clientY);
+        for (let i = 0; i < E_RIGID_BODY_COLLECTION.length; i++) {
+            if (E_RIGID_BODY_COLLECTION[i].EXT_pt_collision_check(p)) {
+                E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].selected = false;
+                CURRENT_BOUND_OBJECT_INDEX = i;
+                E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].selected = true;
+                E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].fixed = true;
+                break;
+            }
+        }
+        mouseStatus.prevTime = performance.now();
+        // object point intersection
+        // engine.paused=true;
+        // console.log(e.clientX,e.clientY);
+    });
+    canvas.addEventListener('touchmove', function (e) {
+        if (!mouseStatus.down) return;
+        let now = performance.now();
+        if (mouseStatus.prevTime == 0) {
+            mouseStatus.prevTime = now;
+        }
+        let dt = now - mouseStatus.prevTime;
+        if (dt == 0) dt = Infinity;
+        mouseStatus.prevTime = now;
+
+        let pos = new Vec2(e.touches[0].clientX, e.touches[0].clientY);
+        pos.subtract(E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].center);
+        E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].move(pos, true);
+        E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].stop();
+
+        let msg = " <b class='event'> [MOUSE MOVE] </b> <br>" +
+            "=======================<br>";
+
+        msg += objectDetails();
+        debug(msg)
+
+        moveControlsToBoundObject();
+    });
+    addEventListener('touchend', function (e) {
+        mouseStatus.down = false;
+        mouseStatus.prevTime = 0;
+        E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].selected = false;
+        E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].fixed = false;
+    });
+    
+
+
 
 });
 
@@ -18,16 +129,17 @@ addEventListener('keydown', function (e) {
 
 
 
-
-
-
-
-
+function moveControlsToBoundObject() {
+    let currObj = E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX];
+    $("#controls").style.left = currObj.center.x + "px";
+    $("#controls").style.top = currObj.center.y + "px";
+}
 
 
 
 // Seperared as a function to enable also touch and mouse support
 function handleCommand(keyCode, msg = '') {
+
     if (E_RIGID_BODY_COLLECTION.length > 0) {
         E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX].selected = true;
     }
@@ -117,22 +229,3 @@ function handleCommand(keyCode, msg = '') {
 }
 
 
-
-function objectDetails() {
-    if (E_RIGID_BODY_COLLECTION.length > 0) {
-        let ob = E_RIGID_BODY_COLLECTION[CURRENT_BOUND_OBJECT_INDEX];
-        let details =
-            "<br>" +
-            "OBJECT DETAILS</br>" +
-            "= = = = = = = = = = = = = =</br>" +
-            "TYPE : " + ob.type + "<br>" +
-            "INDEX (ID) : " + CURRENT_BOUND_OBJECT_INDEX + "<br>" +
-            "POSITION : &lt " + ob.center.x.toFixed(2) + " , " + ob.center.y.toFixed(2) + " &gt; <br>" +
-            "ANGLE : " + Number(ob.angle * 180 / Math.PI).toFixed(2) + " deg<br>" +
-            ""
-            ;
-
-        return details;
-    }
-    return "";
-}

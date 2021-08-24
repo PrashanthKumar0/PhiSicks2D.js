@@ -326,10 +326,16 @@ function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPer
     let tangentAngularImpulse = relativeVelocity.dot(tangent) * (-(1 + effectiveRestitution)) * effectiveFriction;
     tangentAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(tangent), 2) / shape1.momentOfInertia + _pow(Rbp.cross(tangent), 2) / shape2.momentOfInertia;
 
+    // NORMAL
     shape1.angularVelocity -= Rap.cross(normal) * normalAngularImpulse / shape1.momentOfInertia;
     shape2.angularVelocity += Rbp.cross(normal) * normalAngularImpulse / shape2.momentOfInertia;
 
 
+    // ? WTH 
+    // TANGENT
+    shape1.angularVelocity -= effectiveFriction * Rap.cross(tangent) * tangentAngularImpulse / shape1.momentOfInertia;
+    shape2.angularVelocity += effectiveFriction * Rbp.cross(tangent) * tangentAngularImpulse / shape2.momentOfInertia;
+    
 
     normal.scale(normalAngularImpulse);
     tangent.scale(tangentAngularImpulse);
@@ -341,17 +347,10 @@ function resolveCollision(shape1, shape2, collisionInfo, positionalCorrectionPer
     shape2.velocity.add(tangent.copy().scale(shape2.invMass));
 
 
-
-    // let tangentAngularImpulse = relativeVelocity.dot(tangent) * (-(1 + effectiveRestitution));
-    // tangentAngularImpulse /= (shape1.invMass + shape2.invMass) + _pow(Rap.cross(tangent), 2) / shape1.momentOfInertia + _pow(Rbp.cross(tangent), 2) / shape2.momentOfInertia;
-    // ? WTH 
-    // shape1.angularVelocity += effectiveFriction * Rap.cross(normal) * tangentAngularImpulse / shape1.momentOfInertia;
-    // shape2.angularVelocity -= effectiveFriction * Rbp.cross(normal) * tangentAngularImpulse / shape2.momentOfInertia;
-
-    //TODO : remove this
-    if ((isNaN(shape1.angularVelocity) || isNaN(shape2.angularVelocity))) {
-        debugger;
-    }
+    // //TODO : remove this
+    // if ((isNaN(shape1.angularVelocity) || isNaN(shape2.angularVelocity))) {
+    //     debugger;
+    // }
 }
 
 

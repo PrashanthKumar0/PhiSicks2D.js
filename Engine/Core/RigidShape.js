@@ -104,13 +104,12 @@ RigidShape.prototype.applyForce = function (forceVec2) {
 }
 
 
-RigidShape.stop = function () {
+RigidShape.prototype.stop = function () {
     this.velocity = new Vec2(0, 0);
     this.acceleration = new Vec2(0, 0);
 
     this.angularVelocity = 0;
     this.angularAcceleration = 0;
-
 }
 
 // Broad phase collision test (bounding circles)

@@ -157,8 +157,8 @@ Circle.prototype.draw = function (ctx, strokeColor = "blue") {
 
 
     
-    return;
-
+    // return;
+    
     //UP Direction
     ctx.strokeStyle = "OrangeRed";
     ctx.beginPath();

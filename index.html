@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PhiSick.js φ demo</title>
+    <meta name="description" content="A very simple 2D physics engine written in JS">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <canvas id="cnvs"></canvas>
-
+    <div id="controls">
+        <button onclick="handleCommand('q')">rotate ccw</button>
+        <button onclick="handleCommand('e')">rotate cw</button>
+        <button onclick="handleCommand('z')">Play/Pause</button>
+        <button onclick="handleCommand('r')">Spwan New Rect</button>
+        <button onclick="handleCommand('p')">Spwan New Polygon</button>
+        <button onclick="handleCommand('c')">Spwan New Circle</button>
+    </div>
     <div id="LOG">
         Log Messages Will Appear  Here.
     </div>
@@ -25,9 +33,10 @@
 
     <script src="Engine/Core/Engine.js"></script>
     
-    
+    <!-- ! LOAD EXTENSIONS  -->
+    <script src="Engine/Extensions/Graphics/DrawShapes.js"></script>
+    <script src="Engine/Extensions/RigidShape/ext_shape_pt_collision.js"></script>
     <!-- ! EVERYTHING ELSE -->
-    <script src="Engine/Graphics/DrawShapes.js"></script>
     <script src="main.js"></script>
     <script src="inputHandler.js"></script>
 </body>

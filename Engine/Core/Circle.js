@@ -5,7 +5,7 @@
  */
 
 
-function Circle(centerVec2, radius, fixed = false, density = 0.001, restitution = 0.85, coeffFriction = 0.001) {
+function Circle(centerVec2, radius, fixed = false, density = 0.001, restitution = 0.85, coeffFriction = 0.1) {
     mass = density * Math.PI * radius * radius;
     RigidShape.call(this, centerVec2, fixed, mass, restitution, coeffFriction); // inherit
     this.radius = radius;
@@ -37,7 +37,7 @@ Circle.prototype.move = function (vec2Displacement, mustMove = false) {
 }
 
 Circle.prototype.rotate = function (dAngle, mustMove = false) {
-    // if(this.fixed && !mustMove) return;
+    if(this.fixed && !mustMove) return;
     this.angle += dAngle;
     this.start.rotate(this.center, dAngle);
 };

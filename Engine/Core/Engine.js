@@ -17,24 +17,40 @@ function Engine(width, height, ctx) {
     this.fpsDt = 1000 * this.invFps; //actually milli seconds
     this.paused = false;
 
+    this.drawCallback = null;
 
     this.positionalCorrectionPercentage = 0.8; //objects are resolved by 80%
     this.relaxIterations = 15;
 }
 
 Engine.prototype.update = function () { //TODO : CORRECT THE MISTAKE THIS IN FIXED TIMESTEP UPDATE METHOD
-    if (this.paused) { //TODO : also update time here so that after playing it never messes up
+    if (this.drawCallback) this.drawCallback(); // TODO : check type to be function
+
+    if (this.paused) {
+        this.previousUpdateTime = performance.now(); //  also update time here so that after playing it never messes up
         return;
     }
-    // let now = performance.now(); //milli seconds
-    // if (this.previousUpdateTime == 0) this.previousUpdateTime = now - this.invFps; // to update once during initial run
-    // let dt = now - this.previousUpdateTime;
-    // this.previousUpdateTime = now;
 
-    // while (dt > 0) {
-    this.step();
-    // dt -= this.fpsDt;
-    // }
+    let now = performance.now(); //? milli seconds
+    if (this.previousUpdateTime == 0) {
+        this.previousUpdateTime = now;
+    }
+    let timeElapsed = now - this.previousUpdateTime;
+    // debugger;
+    this.droppedFrames = -1;
+    while (timeElapsed > this.fpsDt) {
+        this.step();
+        this.droppedFrames++;
+        timeElapsed -= this.fpsDt;
+        this.previousUpdateTime = now;
+    }
+
+    // debugger;
+}
+
+Engine.prototype.getFps = function () {
+    let fps = this.fps - this.droppedFrames;
+    return fps < 0 ? 0 : fps;
 }
 
 
@@ -109,7 +125,7 @@ Engine.prototype.step = function () {
                         if (!collisionInfo) continue;
                         _colliding = true;
                         // debugger;
-
+                        
                         resolveCollision(E_RIGID_BODY_COLLECTION[i], E_RIGID_BODY_COLLECTION[j], collisionInfo, this.positionalCorrectionPercentage, this.ctx);
 
                         continue;
